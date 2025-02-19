@@ -35,7 +35,7 @@
 			<Dialog.Title
 				class="flex w-full items-center justify-center text-lg font-semibold tracking-tight"
 			>
-				Create New TimeFlies Event
+				Create New Event
 			</Dialog.Title>
 			<Separator.Root class="-mx-5 mb-6 mt-5 block h-px bg-muted" />
 			<Dialog.Description class="text-sm text-foreground-alt">
@@ -50,6 +50,7 @@
 						type="text"
 						class="mt-1 inline-flex h-input w-full rounded-card-sm border border-border-input bg-background px-4 text-base placeholder:text-foreground-alt/50 hover:border-dark-40 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background sm:text-sm"
 						placeholder="Enter event name"
+						required
 					/>
 				</div>
 				<div>
@@ -57,7 +58,8 @@
 						weekdayFormat="short"
 						fixedWeeks={true}
 						bind:value={newDate}
-						hideTimeZone={false}
+						hideTimeZone={true}
+						required
 					>
 						<div class="flex w-full flex-col gap-1.5">
 							<DatePicker.Label class="block select-none text-sm font-medium">Date</DatePicker.Label
@@ -90,7 +92,7 @@
 							</DatePicker.Input>
 							<DatePicker.Content sideOffset={6} class="z-50">
 								<DatePicker.Calendar
-									class="rounded-card-lg border border-dark-10 bg-background-alt p-5 shadow-popover"
+									class="rounded-card-lg border border-dark-10 bg-background-alt p-3 shadow-popover sm:p-5"
 								>
 									{#snippet children({ months, weekdays })}
 										<DatePicker.Header class="flex items-center justify-between">
@@ -113,7 +115,7 @@
 														<DatePicker.GridRow class="mb-1 flex w-full justify-between">
 															{#each weekdays as day}
 																<DatePicker.HeadCell
-																	class="w-10 rounded-md text-xs font-normal text-muted-foreground"
+																	class="w-9 rounded-md text-xs font-normal text-muted-foreground sm:w-10"
 																>
 																	<div>{day.slice(0, 2)}</div>
 																</DatePicker.HeadCell>
@@ -127,10 +129,10 @@
 																	<DatePicker.Cell
 																		{date}
 																		month={month.value}
-																		class="relative size-10 p-0 text-center text-sm"
+																		class="relative size-9 p-0 text-center text-sm sm:size-10"
 																	>
 																		<DatePicker.Day
-																			class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
+																			class="group relative inline-flex size-9 items-center justify-center whitespace-nowrap rounded border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through sm:size-10"
 																		>
 																			<div
 																				class="absolute top-[5px] hidden size-1 rounded-full bg-foreground transition-all group-data-[today]:block group-data-[selected]:bg-background"
