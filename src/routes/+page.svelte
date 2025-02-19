@@ -1,79 +1,16 @@
 <script lang="ts">
+	import DeleteDialog from '$lib/components/delete-dialog.svelte';
+	import NewDialog from '$lib/components/new-dialog.svelte';
+	import { TimeFliesEventStore } from '$lib/dexie-db/events.svelte';
 	import { longpress } from '$lib/hooks/long-press';
 	import { Button } from 'bits-ui';
 	import { format } from 'date-fns';
-	import {
-		MagnifyingGlass,
-		Palette,
-		Plus,
-		PushPinSimple,
-		PushPinSimpleSlash,
-		TrashSimple,
-		X
-	} from 'phosphor-svelte';
+	import { MagnifyingGlass, Palette, PushPinSimple, PushPinSimpleSlash, X } from 'phosphor-svelte';
+	import type { TimeFliesEvent } from '../types';
 
-	type Event = {
-		name: string;
-		date: string;
-		pinned: boolean;
-	};
-
-	let selectedEvents: Event[] = $state([]);
-	const events: Event[] = [
-		{
-			name: 'New Years Day',
-			date: '2026-01-01T00:00:00',
-			pinned: true
-		},
-		{
-			name: "Valentine's Day",
-			date: '2026-02-14T00:00:00',
-			pinned: true
-		},
-		{
-			name: 'Independence Day',
-			date: '2026-07-04T00:00:00',
-			pinned: true
-		},
-		{
-			name: 'Halloween',
-			date: '2026-10-31T00:00:00',
-			pinned: false
-		},
-		{
-			name: 'Thanksgiving',
-			date: '2026-11-26T00:00:00',
-			pinned: false
-		},
-		{
-			name: 'Christmas',
-			date: '2026-12-25T00:00:00',
-			pinned: false
-		},
-		{
-			name: 'Easter',
-			date: '2026-04-05T00:00:00',
-			pinned: false
-		},
-		{
-			name: 'Labor Day',
-			date: '2026-09-07T00:00:00',
-			pinned: false
-		},
-		{
-			name: 'Memorial Day',
-			date: '2026-05-25T00:00:00',
-			pinned: false
-		},
-		{
-			name: "New Year's Eve",
-			date: '2026-12-31T00:00:00',
-			pinned: false
-		}
-	];
-
-	let pinnedEvents = events.filter((event) => event.pinned);
-	let othersEvents = events.filter((event) => !event.pinned);
+	let selectedEvents: number[] = $state([]);
+	let pinnedEvents = $derived(TimeFliesEventStore.getPinnedEvents());
+	let othersEvents = $derived(TimeFliesEventStore.getUnpinnedEvents());
 
 	// Add a reactive time state that updates every second
 	let now = $state(new Date());
@@ -88,10 +25,10 @@
 		return () => clearInterval(interval);
 	});
 
-	function generateCountdown(event: Event) {
-		const eventDate = new Date(event.date).getTime();
+	function generateCountdown(event: TimeFliesEvent) {
+		const eventDate = event.time ? new Date(event.time) : new Date(event.date);
 		const currentDate = now.getTime();
-		const difference = eventDate - currentDate;
+		const difference = eventDate.getTime() - currentDate;
 
 		// Handle case when event has passed
 		if (difference < 0) {
@@ -110,20 +47,22 @@
 		return format(new Date(date), "MMM dd yyyy 'at' hh:mm a");
 	}
 
-	function handleEventSelect(event: Event) {
-		if (selectedEvents.some((e) => e.date === event.date && e.name === event.name)) {
-			selectedEvents = selectedEvents.filter((e) => e.date !== event.date || e.name !== event.name);
+	function handleEventSelect(event: TimeFliesEvent) {
+		if (!event.id) return;
+
+		if (selectedEvents.includes(event.id)) {
+			selectedEvents.splice(selectedEvents.indexOf(event.id), 1);
 		} else {
-			selectedEvents = [...selectedEvents, event];
+			selectedEvents.push(event.id);
 		}
 	}
 
 	let longPressTriggered = false;
 </script>
 
-{#snippet eventCard(event: Event)}
+{#snippet eventCard(event: TimeFliesEvent)}
 	<button
-		class="group flex w-full select-none items-center justify-between gap-2 rounded-card bg-muted p-4 ring-stone-600"
+		class="group flex w-full select-none items-center justify-between gap-2 rounded-card bg-muted p-4 ring-foreground"
 		use:longpress={500}
 		onlongpress={() => {
 			longPressTriggered = true;
@@ -143,7 +82,7 @@
 				handleEventSelect(event);
 			}
 		}}
-		class:ring-2={selectedEvents.some((e) => e.date === event.date && e.name === event.name)}
+		class:ring-2={event.id !== undefined && selectedEvents.includes(event.id)}
 	>
 		<div class="flex flex-col gap-1 text-start">
 			<h2 class="truncate text-sm font-semibold sm:text-base">{event.name}</h2>
@@ -169,30 +108,34 @@
 						<span>{selectedEvents.length}</span>
 					</div>
 					<div class="flex items-center gap-4">
-						<Button.Root
-							class="inline-flex size-8 items-center justify-center rounded-full 
-					 active:scale-98 active:transition-all"
-						>
-							<PushPinSimple class="size-6" />
-						</Button.Root>
-						<Button.Root
-							class="inline-flex size-8 items-center justify-center rounded-full 
-					 active:scale-98 active:transition-all"
-						>
-							<PushPinSimpleSlash class="size-6" />
-						</Button.Root>
+						{#if selectedEvents.length && selectedEvents.every( (id) => pinnedEvents.find((event) => event.id === id) )}
+							<Button.Root
+								onclick={() => {
+									TimeFliesEventStore.unpinEvents(selectedEvents);
+									selectedEvents = [];
+								}}
+								class="inline-flex size-8 items-center justify-center rounded-full active:scale-98 active:transition-all"
+							>
+								<PushPinSimpleSlash class="size-6" />
+							</Button.Root>
+						{:else}
+							<Button.Root
+								onclick={() => {
+									TimeFliesEventStore.pinEvents(selectedEvents);
+									selectedEvents = [];
+								}}
+								class="inline-flex size-8 items-center justify-center rounded-full active:scale-98 active:transition-all"
+							>
+								<PushPinSimple class="size-6" />
+							</Button.Root>
+						{/if}
 						<Button.Root
 							class="inline-flex size-8 items-center justify-center rounded-full 
 					 active:scale-98 active:transition-all"
 						>
 							<Palette class="size-6" />
 						</Button.Root>
-						<Button.Root
-							class="inline-flex size-8 items-center justify-center rounded-full 
-					 active:scale-98 active:transition-all"
-						>
-							<TrashSimple class="size-6" />
-						</Button.Root>
+						<DeleteDialog bind:selectedEvents />
 					</div>
 				</div>
 			</div>
@@ -229,12 +172,7 @@
 
 		<div class="fixed bottom-4 left-1/2 w-full max-w-sm -translate-x-1/2 transform sm:max-w-md">
 			<div class="flex flex-col items-end gap-2 px-4 sm:px-0">
-				<Button.Root
-					class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-dark text-background shadow-mini
-				hover:bg-dark/95 active:scale-98 active:transition-all"
-				>
-					<Plus class="size-6" />
-				</Button.Root>
+				<NewDialog />
 
 				<!-- ads placeholder -->
 				<div class="w-full rounded-lg border bg-muted p-4 shadow-xl">
