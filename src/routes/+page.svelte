@@ -2,18 +2,12 @@
 	import DeleteDialog from '$lib/components/delete-dialog.svelte';
 	import EmptyBox from '$lib/components/empty-box.svelte';
 	import EventDialog from '$lib/components/event-dialog.svelte';
+	import PaletteDialog from '$lib/components/palette-dialog.svelte';
 	import { TimeFliesEventStore } from '$lib/dexie-db/events.svelte';
 	import { longpress } from '$lib/hooks/long-press';
 	import { Button } from 'bits-ui';
 	import { format } from 'date-fns';
-	import {
-		MagnifyingGlass,
-		Palette,
-		Plus,
-		PushPinSimple,
-		PushPinSimpleSlash,
-		X
-	} from 'phosphor-svelte';
+	import { MagnifyingGlass, Plus, PushPinSimple, PushPinSimpleSlash, X } from 'phosphor-svelte';
 	import { IsMounted } from 'runed';
 	import type { TimeFliesEvent } from '../types';
 
@@ -135,11 +129,28 @@
 			selectedEvents.push(event.id);
 		}
 	}
+
+	const colors = [
+		'bg-note-card-1',
+		'bg-note-card-2',
+		'bg-note-card-3',
+		'bg-note-card-4',
+		'bg-note-card-5',
+		'bg-note-card-6',
+		'bg-note-card-7',
+		'bg-note-card-8',
+		'bg-note-card-9',
+		'bg-note-card-10',
+		'bg-note-card-11'
+	];
 </script>
 
 {#snippet eventCard(event: TimeFliesEvent)}
 	<button
-		class="group flex w-full select-none items-center justify-between gap-2 rounded-card bg-muted p-4 ring-foreground"
+		class={[
+			'group flex w-full select-none items-center justify-between gap-2 rounded-card p-4 ring-foreground',
+			event.color ?? 'bg-muted'
+		].join(' ')}
 		use:longpress={500}
 		onlongpress={() => {
 			handleEventSelect(event);
@@ -205,12 +216,7 @@
 								<PushPinSimple class="size-6" />
 							</Button.Root>
 						{/if}
-						<Button.Root
-							class="inline-flex size-8 items-center justify-center rounded-full 
-					 active:scale-98 active:transition-all"
-						>
-							<Palette class="size-6" />
-						</Button.Root>
+						<PaletteDialog bind:selectedEvents />
 						<DeleteDialog bind:selectedEvents />
 					</div>
 				</div>

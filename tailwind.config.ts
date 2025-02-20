@@ -51,6 +51,19 @@ export default {
 				},
 				contrast: {
 					DEFAULT: 'hsl(var(--contrast) / <alpha-value>)'
+				},
+				'note-card': {
+					1: 'hsl(var(--note-card-1))',
+					2: 'hsl(var(--note-card-2))',
+					3: 'hsl(var(--note-card-3))',
+					4: 'hsl(var(--note-card-4))',
+					5: 'hsl(var(--note-card-5))',
+					6: 'hsl(var(--note-card-6))',
+					7: 'hsl(var(--note-card-7))',
+					8: 'hsl(var(--note-card-8))',
+					9: 'hsl(var(--note-card-9))',
+					10: 'hsl(var(--note-card-10))',
+					11: 'hsl(var(--note-card-11))'
 				}
 			},
 			fontFamily: {

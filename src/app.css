@@ -26,6 +26,20 @@
 		--accent-foreground: 0 0% 99%;
 		--destructive: 205 55% 22%;
 		--constrast: 205 55% 22%;
+
+		/* 11 Colorful Pastel Colors for Notes Card */
+		--note-card-1: 350 80% 85%; /* Pink */
+		--note-card-2: 45 80% 85%; /* Yellow */
+		--note-card-3: 130 80% 85%; /* Green */
+		--note-card-4: 190 80% 85%; /* Blue */
+		--note-card-5: 270 80% 85%; /* Purple */
+		--note-card-6: 15 80% 85%; /* Orange */
+		--note-card-7: 160 80% 85%; /* Mint */
+		--note-card-8: 320 80% 85%; /* Magenta */
+		--note-card-9: 90 80% 85%; /* Lime */
+		--note-card-10: 220 80% 85%; /* Sky Blue */
+		--note-card-11: 290 80% 85%; /* Lavender */
+
 		/* Shadows remain as defined */
 		--shadow-mini: 0px 1px 0px 1px rgba(0, 0, 0, 0.04);
 		--shadow-mini-inset: 0px 1px 0px 0px rgba(0, 0, 0, 0.04) inset;
@@ -58,6 +72,19 @@
 		--constrast: 0 0% 99%;
 		--shadow-popover: 0px 7px 12px 3px hsla(0deg 0% 0% / 0.3);
 		--shadow-date-field-focus: 0px 0px 0px 3px rgba(244, 244, 245, 0.1);
+
+		/* 11 Colorful Pastel Colors for Notes Card (Dark Mode) */
+		--note-card-1: 350 70% 75%; /* Pink */
+		--note-card-2: 45 70% 75%; /* Yellow */
+		--note-card-3: 130 70% 75%; /* Green */
+		--note-card-4: 190 70% 75%; /* Blue */
+		--note-card-5: 270 70% 75%; /* Purple */
+		--note-card-6: 15 70% 75%; /* Orange */
+		--note-card-7: 160 70% 75%; /* Mint */
+		--note-card-8: 320 70% 75%; /* Magenta */
+		--note-card-9: 90 70% 75%; /* Lime */
+		--note-card-10: 220 70% 75%; /* Sky Blue */
+		--note-card-11: 290 70% 75%; /* Lavender */
 	}
 }
 

@@ -63,6 +63,18 @@ class TimeFliesEventClass {
 		}
 		toast.success('Events deleted successfully');
 	}
+
+	async recolorEvents(eventIds: number[], color: string) {
+		for (const id of eventIds) {
+			await this.updateEvent(id, { color });
+		}
+	}
+
+	async clearEventColor(eventIds: number[]) {
+		for (const id of eventIds) {
+			await this.updateEvent(id, { color: null });
+		}
+	}
 }
 
 export const TimeFliesEventStore = new TimeFliesEventClass();

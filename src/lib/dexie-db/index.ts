@@ -20,5 +20,6 @@ export const initialData: TimeFliesEvent = {
 	name: '',
 	date: format(new Date(), 'yyyy-MM-dd'),
 	time: null,
+	color: null,
 	pinned: false
 };
