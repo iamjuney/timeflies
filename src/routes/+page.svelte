@@ -19,7 +19,6 @@
 
 	let selectedEvents: number[] = $state([]);
 	let searchQuery = $state('');
-	let longPressTriggered = $state(false);
 	const isMounted = new IsMounted();
 	let allEvents = $derived(TimeFliesEventStore.events);
 	let isNewDialogOpen = $state(false);
@@ -36,10 +35,7 @@
 	let filteredEvents = $derived(
 		allEvents.filter((event) => {
 			const query = searchQuery.toLowerCase().trim();
-			return (
-				event.name.toLowerCase().includes(query) ||
-				formatDate(event.date).toLowerCase().includes(query)
-			);
+			return event.name.toLowerCase().includes(query);
 		})
 	);
 
@@ -146,16 +142,12 @@
 		class="group flex w-full select-none items-center justify-between gap-2 rounded-card bg-muted p-4 ring-foreground"
 		use:longpress={500}
 		onlongpress={() => {
-			longPressTriggered = true;
 			handleEventSelect(event);
 		}}
 		onclick={(e) => {
-			e.preventDefault();
-			const wasLongPress = $state.snapshot(longPressTriggered);
-			longPressTriggered = false;
-			if (wasLongPress) return;
-			if (selectedEvents.length > 0) handleEventSelect(event);
-			else {
+			if (selectedEvents.length > 0) {
+				handleEventSelect(event);
+			} else {
 				selectedEvent = event;
 				isEditDialogOpen = true;
 			}

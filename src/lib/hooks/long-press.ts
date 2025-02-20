@@ -17,19 +17,35 @@ export const longpress: Action<
 	}
 > = (node, duration = 500) => {
 	let timer: ReturnType<typeof setTimeout>;
+	let isLongPress = false;
 
-	function handleStart() {
+	function handleStart(e: MouseEvent | TouchEvent) {
+		isLongPress = false;
 		timer = setTimeout(() => {
+			isLongPress = true;
 			node.dispatchEvent(new CustomEvent('longpress'));
 		}, duration);
 	}
 
-	function handleEnd() {
+	function handleEnd(e: MouseEvent | TouchEvent) {
 		clearTimeout(timer);
+		// If this was a long press, prevent the click event
+		if (isLongPress) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}
+
+	function handleClick(e: MouseEvent) {
+		if (isLongPress) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
 	}
 
 	node.addEventListener('mousedown', handleStart);
-	node.addEventListener('touchstart', handleStart);
+	node.addEventListener('touchstart', handleStart, { passive: true });
+	node.addEventListener('click', handleClick);
 	node.addEventListener('mouseup', handleEnd);
 	node.addEventListener('mouseleave', handleEnd);
 	node.addEventListener('touchend', handleEnd);
@@ -40,6 +56,7 @@ export const longpress: Action<
 			clearTimeout(timer);
 			node.removeEventListener('mousedown', handleStart);
 			node.removeEventListener('touchstart', handleStart);
+			node.removeEventListener('click', handleClick);
 			node.removeEventListener('mouseup', handleEnd);
 			node.removeEventListener('mouseleave', handleEnd);
 			node.removeEventListener('touchend', handleEnd);
