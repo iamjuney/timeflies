@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DeleteDialog from '$lib/components/delete-dialog.svelte';
+	import EmptyBox from '$lib/components/empty-box.svelte';
 	import NewDialog from '$lib/components/new-dialog.svelte';
 	import { TimeFliesEventStore } from '$lib/dexie-db/events.svelte';
 	import { longpress } from '$lib/hooks/long-press';
@@ -11,6 +12,7 @@
 	let selectedEvents: number[] = $state([]);
 	let pinnedEvents = $derived(TimeFliesEventStore.getPinnedEvents());
 	let othersEvents = $derived(TimeFliesEventStore.getUnpinnedEvents());
+	let longPressTriggered = $state(false);
 
 	// Add a reactive time state that updates every second
 	let now = $state(new Date());
@@ -56,8 +58,6 @@
 			selectedEvents.push(event.id);
 		}
 	}
-
-	let longPressTriggered = false;
 </script>
 
 {#snippet eventCard(event: TimeFliesEvent)}
@@ -154,21 +154,33 @@
 			<MagnifyingGlass class="absolute left-3 top-3 size-4 sm:left-4 sm:top-3 sm:size-6" />
 		</div>
 
-		<p class="text-xs sm:text-sm">Pinned</p>
+		{#if pinnedEvents.length || othersEvents.length}
+			{#if pinnedEvents.length}
+				<p class="text-xs sm:text-sm">Pinned</p>
+				<div class="flex flex-col gap-2">
+					{#each pinnedEvents as event}
+						{@render eventCard(event)}
+					{/each}
+				</div>
+			{/if}
 
-		<div class="flex flex-col gap-2">
-			{#each pinnedEvents as event}
-				{@render eventCard(event)}
-			{/each}
-		</div>
-
-		<p class="text-xs sm:text-sm">Others</p>
-
-		<div class="flex flex-col gap-2">
-			{#each othersEvents as event}
-				{@render eventCard(event)}
-			{/each}
-		</div>
+			{#if othersEvents.length}
+				<p class="text-xs sm:text-sm">Others</p>
+				<div class="flex flex-col gap-2">
+					{#each othersEvents as event}
+						{@render eventCard(event)}
+					{/each}
+				</div>
+			{/if}
+		{:else}
+			<div class="flex flex-col items-center justify-center gap-2 py-4">
+				<EmptyBox />
+				<p class="text-center text-xs sm:text-sm">
+					No events found. <br /> Add a <span class="font-semibold">new event</span> using the button
+					below!
+				</p>
+			</div>
+		{/if}
 
 		<div class="fixed bottom-4 left-1/2 w-full max-w-sm -translate-x-1/2 transform sm:max-w-md">
 			<div class="flex flex-col items-end gap-2 px-4 sm:px-0">
