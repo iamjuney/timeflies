@@ -1,17 +1,36 @@
 <script lang="ts">
 	import { initialData } from '$lib/dexie-db';
 	import { TimeFliesEventStore } from '$lib/dexie-db/events.svelte';
-	import { parseDate } from '@internationalized/date';
+	import { getLocalTimeZone, parseDate, today } from '@internationalized/date';
 	import { Button, DatePicker, Dialog, Label, Separator } from 'bits-ui';
-	import { Plus, X } from 'phosphor-svelte';
+	import { X } from 'phosphor-svelte';
 	import CalendarBlank from 'phosphor-svelte/lib/CalendarBlank';
 	import CaretLeft from 'phosphor-svelte/lib/CaretLeft';
 	import CaretRight from 'phosphor-svelte/lib/CaretRight';
+	import { toast } from 'svelte-sonner';
 	import type { TimeFliesEvent } from '../../types';
 
-	let event = $state<TimeFliesEvent>(initialData);
-	let newDate = $state(parseDate(event.date));
-	let isDialogOpen = $state(false);
+	let {
+		data,
+		isDialogOpen = $bindable()
+	}: {
+		data?: TimeFliesEvent;
+		isDialogOpen?: boolean;
+	} = $props();
+
+	// Update event when data prop changes
+	$effect(() => {
+		if (data) {
+			event = data;
+			newDate = parseDate(event.date);
+		} else {
+			event = structuredClone(initialData);
+			newDate = today(getLocalTimeZone());
+		}
+	});
+
+	let event = $state<TimeFliesEvent>(structuredClone(data) || structuredClone(initialData));
+	let newDate = $state(data ? parseDate(data.date) : today(getLocalTimeZone()));
 
 	$effect(() => {
 		event.date = newDate.toString();
@@ -19,12 +38,6 @@
 </script>
 
 <Dialog.Root bind:open={isDialogOpen}>
-	<Dialog.Trigger
-		class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-dark text-background shadow-mini
-				hover:bg-dark/95 active:scale-98 active:transition-all"
-	>
-		<Plus class="size-6" />
-	</Dialog.Trigger>
 	<Dialog.Portal>
 		<Dialog.Overlay
 			class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
@@ -35,11 +48,11 @@
 			<Dialog.Title
 				class="flex w-full items-center justify-center text-lg font-semibold tracking-tight"
 			>
-				Create New Event
+				{data ? 'Edit' : 'Create New'} Event
 			</Dialog.Title>
 			<Separator.Root class="-mx-5 mb-6 mt-5 block h-px bg-muted" />
 			<Dialog.Description class="text-sm text-foreground-alt">
-				Fill in the details for your event.
+				{data ? 'Edit the details of your event.' : 'Fill in the details for your new event.'}
 			</Dialog.Description>
 			<div class="flex flex-col gap-4 py-7">
 				<div>
@@ -175,12 +188,22 @@
 			<div class="flex w-full justify-end">
 				<Button.Root
 					onclick={() => {
-						TimeFliesEventStore.createEvent($state.snapshot(event));
+						// validate
+						if (!event.name || !event.date) {
+							toast.error('Please fill in all required fields.');
+						}
+
+						if (data && event.id) {
+							TimeFliesEventStore.updateEvent(event.id, $state.snapshot(event));
+						} else {
+							TimeFliesEventStore.createEvent($state.snapshot(event));
+							event = structuredClone(initialData);
+						}
 						isDialogOpen = false;
 					}}
 					class="inline-flex h-input w-full items-center justify-center rounded-input bg-dark px-[50px] text-[15px] font-semibold text-background shadow-mini hover:bg-dark/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
 				>
-					Save
+					{data ? 'Save' : 'Create'}
 				</Button.Root>
 			</div>
 			<Dialog.Close

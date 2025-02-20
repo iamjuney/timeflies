@@ -1,6 +1,8 @@
 <script>
-	import { browser } from '$app/environment';
 	import { LottiePlayer } from '@lottiefiles/svelte-lottie-player';
+	import { IsMounted } from 'runed';
+
+	const isMounted = new IsMounted();
 	const controlsLayout = [
 		'previousFrame',
 		'playpause',
@@ -17,7 +19,7 @@
 	];
 </script>
 
-{#if browser}
+{#if isMounted.current}
 	<LottiePlayer
 		src="/assets/box_empty.json"
 		autoplay={true}
