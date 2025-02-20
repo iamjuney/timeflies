@@ -302,9 +302,9 @@
 				</Button.Root>
 
 				<!-- ads placeholder -->
-				<div class="w-full rounded-lg border bg-muted p-4 shadow-xl">
+				<!-- <div class="w-full rounded-lg border bg-muted p-4 shadow-xl">
 					<p class="text-center text-sm">Your ad here</p>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
