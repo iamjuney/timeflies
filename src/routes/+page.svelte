@@ -121,7 +121,7 @@
 		return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 	}
 
-	function formatDate(date: string, time: string) {
+	function formatDate(date: string, time: string | null) {
 		const formattedDate = format(new Date(date), 'MMM dd yyyy');
 		if (time) {
 			return `${formattedDate} at ${format(new Date(`2000-01-01T${time}`), 'h:mm a')}`;
@@ -132,8 +132,9 @@
 	function handleEventSelect(event: TimeFliesEvent) {
 		if (!event.id) return;
 
-		if (selectedEvents.includes(event.id)) {
-			selectedEvents.splice(selectedEvents.indexOf(event.id), 1);
+		const eventIndex = selectedEvents.indexOf(event.id);
+		if (eventIndex !== -1) {
+			selectedEvents.splice(eventIndex, 1);
 		} else {
 			selectedEvents.push(event.id);
 		}
@@ -150,20 +151,14 @@
 		}}
 		onclick={(e) => {
 			e.preventDefault();
-			if (longPressTriggered) {
-				longPressTriggered = false;
-				return;
-			}
+			const wasLongPress = $state.snapshot(longPressTriggered);
+			longPressTriggered = false;
+			if (wasLongPress) return;
 			if (selectedEvents.length > 0) handleEventSelect(event);
 			else {
 				selectedEvent = event;
 				isEditDialogOpen = true;
 			}
-		}}
-		ontouchstart={(e) => {
-			e.preventDefault();
-			// For mobile: mimic click behavior without long press logic or duplicate events.
-			if (selectedEvents.length > 0) handleEventSelect(event);
 		}}
 		onkeydown={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {
