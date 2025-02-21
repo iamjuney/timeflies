@@ -5,8 +5,8 @@
 	import PaletteDialog from '$lib/components/palette-dialog.svelte';
 	import { TimeFliesEventStore } from '$lib/dexie-db/events.svelte';
 	import { longpress } from '$lib/hooks/long-press';
+	import { formatEventDate, generateCountdown } from '$lib/utils';
 	import { Button } from 'bits-ui';
-	import { format } from 'date-fns';
 	import { MagnifyingGlass, Plus, PushPinSimple, PushPinSimpleSlash, X } from 'phosphor-svelte';
 	import type { TimeFliesEvent } from '../types';
 
@@ -82,42 +82,6 @@
 		currentPage = 1; // Reset pagination when search changes
 	}
 
-	function generateCountdown(event: TimeFliesEvent) {
-		// Create a base date from the event.date
-		const baseDate = new Date(event.date);
-
-		// If time is provided as a string (e.g. "14:30"), parse and set it on the base date
-		if (event.time && typeof event.time === 'string') {
-			const [hours, minutes] = event.time.split(':').map(Number);
-			if (!isNaN(hours) && !isNaN(minutes)) {
-				baseDate.setHours(hours, minutes, 0, 0);
-			}
-		}
-
-		const currentDate = now.getTime();
-		const difference = baseDate.getTime() - currentDate;
-
-		// Handle case when event has passed
-		if (difference < 0) {
-			return 'Event has passed';
-		}
-
-		const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-		const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-		const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-		const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-		return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-	}
-
-	function formatDate(date: string, time: string | null) {
-		const formattedDate = format(new Date(date), 'MMM dd yyyy');
-		if (time) {
-			return `${formattedDate} at ${format(new Date(`2000-01-01T${time}`), 'h:mm a')}`;
-		}
-		return formattedDate;
-	}
-
 	function handleEventSelect(event: TimeFliesEvent) {
 		if (!event.id) return;
 
@@ -128,20 +92,6 @@
 			selectedEvents.push(event.id);
 		}
 	}
-
-	const colors = [
-		'bg-note-card-1',
-		'bg-note-card-2',
-		'bg-note-card-3',
-		'bg-note-card-4',
-		'bg-note-card-5',
-		'bg-note-card-6',
-		'bg-note-card-7',
-		'bg-note-card-8',
-		'bg-note-card-9',
-		'bg-note-card-10',
-		'bg-note-card-11'
-	];
 </script>
 
 {#snippet eventCard(event: TimeFliesEvent)}
@@ -151,9 +101,7 @@
 			event.color ?? 'bg-muted'
 		].join(' ')}
 		use:longpress={500}
-		onlongpress={() => {
-			handleEventSelect(event);
-		}}
+		onlongpress={() => handleEventSelect(event)}
 		onclick={(e) => {
 			if (selectedEvents.length > 0) {
 				handleEventSelect(event);
@@ -172,9 +120,9 @@
 	>
 		<div class="flex flex-col gap-1 text-start">
 			<h2 class="truncate text-sm font-semibold sm:text-base">{event.name}</h2>
-			<p class="text-nowrap text-xs sm:text-sm">{formatDate(event.date, event.time)}</p>
+			<p class="text-nowrap text-xs sm:text-sm">{formatEventDate(event.date, event.time)}</p>
 		</div>
-		<span class="truncate text-base font-semibold sm:text-lg">{generateCountdown(event)}</span>
+		<span class="truncate text-base font-semibold sm:text-lg">{generateCountdown(event, now)}</span>
 	</button>
 {/snippet}
 
@@ -298,7 +246,7 @@
 					<Plus class="size-6" />
 				</Button.Root>
 
-				<!-- ads placeholder -->
+				<!-- ADS placeholder -->
 				<!-- <div class="w-full rounded-lg border bg-muted p-4 shadow-xl">
 					<p class="text-center text-sm">Your ad here</p>
 				</div> -->
