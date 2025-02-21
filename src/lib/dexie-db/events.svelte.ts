@@ -5,8 +5,10 @@ import { db } from './index';
 
 class TimeFliesEventClass {
 	events = $state<TimeFliesEvent[]>([]);
+	isLoaded = $state(false);
 
 	constructor() {
+		if (typeof window === 'undefined') return;
 		this.loadEvents();
 	}
 
@@ -14,6 +16,7 @@ class TimeFliesEventClass {
 		liveQuery(() => db.events.orderBy('date').toArray()).subscribe({
 			next: (events) => {
 				this.events = events;
+				this.isLoaded = true;
 			},
 			error: (error) => {
 				console.error('Error in events subscription:', error);

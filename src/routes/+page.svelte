@@ -8,13 +8,12 @@
 	import { Button } from 'bits-ui';
 	import { format } from 'date-fns';
 	import { MagnifyingGlass, Plus, PushPinSimple, PushPinSimpleSlash, X } from 'phosphor-svelte';
-	import { IsMounted } from 'runed';
 	import type { TimeFliesEvent } from '../types';
 
 	let selectedEvents: number[] = $state([]);
 	let searchQuery = $state('');
-	const isMounted = new IsMounted();
 	let allEvents = $derived(TimeFliesEventStore.events);
+	let isLoaded = $derived(TimeFliesEventStore.isLoaded);
 	let isNewDialogOpen = $state(false);
 	let isEditDialogOpen = $state(false);
 	let selectedEvent = $state<TimeFliesEvent>();
@@ -55,7 +54,7 @@
 
 	// Initialize intersection observer for infinite scroll
 	$effect(() => {
-		if (isMounted.current && loadMoreTrigger) {
+		if (isLoaded && loadMoreTrigger) {
 			loadMoreObserver = new IntersectionObserver(handleIntersection, {
 				root: null,
 				rootMargin: '100px',
@@ -225,8 +224,6 @@
 	{/if}
 
 	<div class="w-full max-w-md space-y-4">
-		<!-- <img src="/logo-simple.png" alt="TimeFlies Logo" class="mx-auto h-10 w-auto sm:h-16" /> -->
-
 		<div class="relative w-full">
 			<input
 				type="text"
@@ -281,7 +278,7 @@
 			{/if}
 		{/if}
 
-		{#if isMounted.current && !pinnedEvents.length && !othersEvents.length && !searchQuery}
+		{#if isLoaded && !pinnedEvents.length && !othersEvents.length && !searchQuery}
 			<div class="flex flex-col items-center justify-center gap-2 py-4">
 				<EmptyBox />
 				<p class="text-center text-xs sm:text-sm">
