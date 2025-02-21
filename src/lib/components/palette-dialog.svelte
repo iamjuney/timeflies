@@ -46,6 +46,7 @@
 					class="size-12 rounded-full bg-muted shadow-mini transition-all hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 active:scale-95 sm:size-16"
 					onclick={() => {
 						TimeFliesEventStore.clearEventColor(selectedEvents);
+						selectedEvents = [];
 						isDialogOpen = false;
 					}}
 				/>
@@ -59,6 +60,7 @@
 						].join(' ')}
 						onclick={() => {
 							TimeFliesEventStore.recolorEvents(selectedEvents, colors[i]);
+							selectedEvents = [];
 							isDialogOpen = false;
 						}}
 					/>
