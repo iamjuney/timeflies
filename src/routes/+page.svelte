@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AdUnit from '$lib/components/ad-unit.svelte';
 	import DeleteDialog from '$lib/components/delete-dialog.svelte';
 	import EmptyBox from '$lib/components/empty-box.svelte';
 	import EventDialog from '$lib/components/event-dialog.svelte';
@@ -246,10 +247,10 @@
 					<Plus class="size-6" />
 				</Button.Root>
 
-				<!-- ADS placeholder -->
-				<!-- <div class="w-full rounded-lg border bg-muted p-4 shadow-xl">
-					<p class="text-center text-sm">Your ad here</p>
-				</div> -->
+				<!-- AD placeholder -->
+				<div class="w-full rounded-lg border bg-muted p-4 shadow-xl">
+					<AdUnit adSlot="3162954615" />
+				</div>
 			</div>
 		</div>
 	</div>
