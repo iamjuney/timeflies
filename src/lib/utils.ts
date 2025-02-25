@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import type { TimeFliesEvent } from '../types';
 
 export function generateCountdown(event: TimeFliesEvent, now: Date) {
@@ -27,9 +27,8 @@ export function generateCountdown(event: TimeFliesEvent, now: Date) {
 }
 
 export function formatEventDate(date: string, time: string | null) {
-	const formattedDate = format(new Date(date), 'MMM dd yyyy');
 	if (time) {
-		return `${formattedDate} at ${format(new Date(`2000-01-01T${time}`), 'h:mm a')}`;
+		return formatInTimeZone(new Date(`${date}T${time}`), 'Asia/Manila', "MMM dd yyyy 'at' h:mm a");
 	}
-	return formattedDate;
+	return formatInTimeZone(new Date(date), 'Asia/Manila', 'MMM dd yyyy');
 }
