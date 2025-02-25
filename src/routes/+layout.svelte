@@ -46,8 +46,6 @@
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta name="application-name" content="TimeFlies" />
 	<meta name="version" content="1.0.0" />
-	<meta name="security-level" content="high" />
-	<!-- Custom tag for internal reference -->
 </svelte:head>
 
 <Toaster position="bottom-center" />
