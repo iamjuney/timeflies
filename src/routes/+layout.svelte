@@ -41,9 +41,9 @@
 		content="event tracking, time tracking, productivity, management, time management"
 	/>
 	<meta name="author" content="Aljon Lerios" />
-	<meta name="robots" content="noindex, nofollow" />
-	<!-- For internal system security -->
-	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<meta name="author" content="Aljon Lerios" />
+	<meta name="publisher" content="Aljon Lerios" />
+	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta name="application-name" content="TimeFlies" />
 	<meta name="version" content="1.0.0" />
 	<meta name="security-level" content="high" />
