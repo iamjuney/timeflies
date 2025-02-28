@@ -11,6 +11,10 @@ A modern countdown app that helps you track important dates and events. Built wi
 - Works offline
 - Mobile-friendly interface
 
+## Screenshots
+
+![TimeFlies App Screenshot](shots.png)
+
 ## Development
 
 First, clone the repository and install dependencies:
