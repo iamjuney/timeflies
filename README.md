@@ -13,7 +13,7 @@ A modern countdown app that helps you track important dates and events. Built wi
 
 ## Screenshots
 
-![TimeFlies App Screenshot](shots.png)
+![TimeFlies App Screenshot](/static/assets/shots.png)
 
 ## Development
 
