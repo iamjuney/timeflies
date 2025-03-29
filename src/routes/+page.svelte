@@ -118,7 +118,7 @@
 			}
 		}}
 	>
-		<div class="flex max-w-[60%] flex-col gap-1.5 text-start">
+		<div class="flex max-w-[50%] flex-col gap-1.5 text-start">
 			<h2 class="select-none truncate text-sm font-semibold sm:text-base">
 				{event.name}
 			</h2>
