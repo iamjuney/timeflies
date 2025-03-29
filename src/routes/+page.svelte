@@ -118,14 +118,16 @@
 			}
 		}}
 	>
-		<div class="flex flex-col gap-1.5 text-start">
-			<h2 class="select-none truncate text-sm font-semibold sm:text-base">{event.name}</h2>
+		<div class="flex max-w-[60%] flex-col gap-1.5 text-start">
+			<h2 class="select-none truncate text-sm font-semibold sm:text-base">
+				{event.name}
+			</h2>
 			<p class="select-none text-nowrap text-xs opacity-80 sm:text-sm">
 				{formatEventDate(event.date, event.time)}
 			</p>
 		</div>
 		<span
-			class="select-none truncate rounded-full bg-background/20 px-3 py-1.5 text-sm font-bold sm:text-base"
+			class="shrink-0 select-none truncate rounded-full bg-background/20 px-3 py-1.5 text-sm font-bold sm:text-base"
 		>
 			{generateCountdown(event, now)}
 		</span>
