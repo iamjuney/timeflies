@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-const siteUrl = 'https://timeflies.pages.dev/';
+const siteUrl = 'https://timeflies.aljonlerios.com/';
 
 export const GET: RequestHandler = async () => {
 	const sitemap = `<?xml version="1.0" encoding="UTF-8" ?>
