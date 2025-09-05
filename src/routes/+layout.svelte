@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { Toaster } from 'svelte-sonner';
 	import '../app.css';
@@ -117,5 +118,6 @@
 	</script>
 </svelte:head>
 
+<ModeWatcher />
 <Toaster position="bottom-center" />
 {@render children()}
